@@ -3,7 +3,7 @@ package cn.edu.whu.cstar.algorithms;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.edu.edhu.cstar.utils.DistanceCalculator;
+import cn.edu.whu.cstar.utils.DistanceCalculator;
 
 public class Usage {
 

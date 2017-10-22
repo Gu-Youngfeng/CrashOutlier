@@ -3,8 +3,8 @@ package cn.edu.whu.cstar.algorithms;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.edu.edhu.cstar.utils.ARFFReader;
-import cn.edu.edhu.cstar.utils.DistanceCalculator;
+import cn.edu.whu.cstar.utils.ARFFReader;
+import cn.edu.whu.cstar.utils.DistanceCalculator;
 import weka.core.Instance;
 import weka.core.Instances;
 
