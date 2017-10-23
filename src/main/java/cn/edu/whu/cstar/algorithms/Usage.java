@@ -10,7 +10,7 @@ public class Usage {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
-		DistanceBased db = new DistanceBased("assembly/Jsqlparser.arff");
+		HilOut db = new HilOut("assembly/Jsqlparser.arff");
 		db.showResult();
 		
 		List<Double> ls1 = new ArrayList<Double>();

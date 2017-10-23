@@ -8,13 +8,13 @@ import cn.edu.whu.cstar.utils.DistanceCalculator;
 import weka.core.Instance;
 import weka.core.Instances;
 
-public class DistanceBased {
+public class HilOut {
 	
 	private static Instances dataset;
 	
 	private static List<CrashNode> nodeset = new ArrayList<CrashNode>();
 	
-	public DistanceBased(String path){
+	public HilOut(String path){
 		ARFFReader reader = new ARFFReader(path);
 		dataset = reader.getDataset();
 		for(int i=0; i<dataset.numInstances(); i++){
