@@ -15,7 +15,7 @@ public class DistanceCalculator {
 	public static double distanceEculidean(List<Double> ls1, List<Double> ls2){
 		double length = 0.0d;
 		
-		if(ls1.size() != ls2.size()){
+		if(ls1.size() != ls2.size()){ // size not equal
 			return -1;
 		}
 		
@@ -28,6 +28,36 @@ public class DistanceCalculator {
 		length = Math.sqrt(delta);
 		
 		return length;
+	}
+	
+	/**
+	 * <p>To get the <b>k</b>-nearest distance in <b>dis</b> array.</p>
+	 * @param dis double array
+	 * @param k k-th nearest
+	 * @return k-nearest distance
+	 */
+	public static double findKDistance(double[] dis, int k){
+		double kdis = 0.0d;
+		
+		if(k > dis.length){ // k is out of bounds
+			return -1;
+		}
+		
+		/** sorting dis by simple bubble sorting algorithm in ascending order*/
+		for(int i=0; i<dis.length-1; i++){
+			for(int j=0; j<dis.length-i-1; j++){
+				if(dis[j] > dis[j+1]){ 
+					double temp = dis[j+1];
+					dis[j+1] = dis[j];
+					dis[j] = temp;
+				}
+			}
+		}
+
+		/** assign k-distance*/
+		kdis = dis[k-1];
+		
+		return kdis;
 	}
 
 }
