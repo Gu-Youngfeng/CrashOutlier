@@ -10,6 +10,16 @@ import cn.edu.whu.cstar.utils.DistanceCalculator;
 import weka.core.Instance;
 import weka.core.Instances;
 
+/***
+ * <p><b>HilOut</b> is one of the most famous distance-based outlier detection algorithms. It's provided by XX et al.</p>
+ * <p>It detect outliers by calculating weight of each data point, the weight is the sum of distances 
+ * between one point to its k-nearest neighbors. Thus, those data points who has the higher weight are 
+ * more likely to be the outliers.</p>
+ * <li>1. calculating distances of any pair of points.</li>
+ * <li>2. getting <b>K</b>-nearest neighbors of each points.</li>
+ * <li>3. counting the weight of each point.</li>
+ * <li>4. ranking the points in terms of weights, the top-<b>N</b> points are detected as outliers.</li>
+ */
 public class HilOut {
 	
 	private static Instances dataset;
@@ -35,6 +45,8 @@ public class HilOut {
 		}
 		
 		calculateKNeighbors();
+		
+		rankingByWeights();
 	}
 	
 	public Instance getIns(int index){
@@ -68,17 +80,22 @@ public class HilOut {
 	}
 	
 	/**
-	 * <p>To</p>
+	 * <p>To rank the instance by weight-values.</p>
 	 */
 	public void rankingByWeights(){
 		nodeset.sort(new WeightComparator());
 		int outlierNum = (int)(nodeset.size()*P); 
 		
+		for(int i=0; i<outlierNum; i++){
+			nodeset.get(i).setPrelabel("outlier");
+		}
+		
 	}
 	
 	public void showResult(){
 		for(int i=0; i<nodeset.size(); i++){
-			System.out.println("Weight: " + nodeset.get(i).getWeight());
+			if(nodeset.get(i).isOutlier())
+				System.out.println("Weight: " + nodeset.get(i).getWeight() + ", Label: " + nodeset.get(i).getLabel());
 		}
 	}
 	
@@ -92,6 +109,8 @@ public class HilOut {
 		private List<CrashNode> KNeighbors = new ArrayList<CrashNode>();
 		
 		private String label;
+		
+		private String prelabel = "normal"; // outlier or normal
 		
 		private List<Double> lsAttr = new ArrayList<Double>();
 		
@@ -111,6 +130,22 @@ public class HilOut {
 		 */
 		public List<Double> getAttr(){
 			return lsAttr;
+		}
+		
+		public void setPrelabel(String flag){
+			this.prelabel = flag;
+		}
+		
+		public String getLabel(){
+			return label;
+		}
+		
+		public boolean isOutlier(){
+			if(prelabel == "outlier"){
+				return true;
+			}else{
+				return false;
+			}
 		}
 		
 		/**

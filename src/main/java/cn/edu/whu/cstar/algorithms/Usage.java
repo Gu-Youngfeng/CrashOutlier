@@ -4,7 +4,7 @@ public class Usage {
 
 	public static void main(String[] args) {
 
-		HilOut db = new HilOut("assembly/Jsqlparser.arff");
+		HilOut db = new HilOut("Jsqlparser.arff");
 		db.showResult();
 			
 	}
