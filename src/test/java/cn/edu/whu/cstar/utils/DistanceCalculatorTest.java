@@ -107,4 +107,8 @@ public class DistanceCalculatorTest {
 		
 	}
 	
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 0afdd3c91417c494e9980dc82aeca47d2d9abb48
