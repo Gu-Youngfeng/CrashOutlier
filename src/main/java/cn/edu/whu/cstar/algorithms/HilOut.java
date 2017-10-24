@@ -32,10 +32,7 @@ public class HilOut {
 	
 	private static List<double[]> lsDistance = new ArrayList<double[]>();;
 	
-	/**
-	 * <p>To initialize the dataset by <b>ARFFReader.read(String)</b>, then save all the instances in nodeset.</p>
-	 * @param path dataset path
-	 */
+	/**To initialize the dataset by <b>ARFFReader.read(String)</b>, then save all the instances in nodeset.*/
 	public HilOut(String path){
 		ARFFReader reader = new ARFFReader(path);
 		dataset = reader.getDataset();
@@ -79,9 +76,7 @@ public class HilOut {
 				
 	}
 	
-	/**
-	 * <p>To rank the instance by weight-values.</p>
-	 */
+	/**To rank the instance by weight-values. */
 	public void rankingByWeights(){
 		nodeset.sort(new WeightComparator());
 		int outlierNum = (int)(nodeset.size()*P); 
@@ -101,21 +96,24 @@ public class HilOut {
 	
 	/***
 	 * <p>This class <b>CrashNode</b> is used to simulate the characteristic of each instance.</p>
-	 * <p></p>
+	 * <p>We use the <b>KNeightbors</b> to save the k nearest neighbor list, use <b>label</b> to save 
+	 * the original class label, use <b>lsAttr</b> to save the feature list, then use <b>prelabel</b> to
+	 * save the outlierness of this instance, finally, <b>weight</b> to save the weight value.</p>
 	 *
 	 */
 	class CrashNode{
 		
-		private List<CrashNode> KNeighbors = new ArrayList<CrashNode>();
+		private List<CrashNode> KNeighbors = new ArrayList<CrashNode>(); // k-nearest neighbors
 		
-		private String label;
+		private String label; // class label
 		
 		private String prelabel = "normal"; // outlier or normal
 		
-		private List<Double> lsAttr = new ArrayList<Double>();
+		private List<Double> lsAttr = new ArrayList<Double>(); // feature list
 		
-		private double weight = 0.0d;
+		private double weight = 0.0d; // weight value
 		
+		/**To initialize the instance with features and class label */
 		CrashNode(Instance instance){
 			int lenAttr = instance.numAttributes();
 			label = instance.stringValue(lenAttr-1); // set true label
@@ -124,22 +122,22 @@ public class HilOut {
 			}
 		}
 		
-		/**
-		 * <p>To get <b>feature-values</b> of instance.</p>
-		 * @return feature list
-		 */
+		/**<p>To get <b>feature-values</b> of instance. */
 		public List<Double> getAttr(){
 			return lsAttr;
 		}
 		
+		/**To save predicted flag, i.e., '<b>normal</b>' or '<b>outlier</b>'.*/
 		public void setPrelabel(String flag){
 			this.prelabel = flag;
 		}
 		
+		/**To get the original class label.*/
 		public String getLabel(){
 			return label;
 		}
 		
+		/**To judge whether the instance is predicted as a outlier. */
 		public boolean isOutlier(){
 			if(prelabel == "outlier"){
 				return true;
@@ -148,11 +146,7 @@ public class HilOut {
 			}
 		}
 		
-		/**
-		 * <p>To get distance to other <b>node</b>. Note the default distance is the Euclidean Distance.</p>
-		 * @param node CrashNode
-		 * @return distance
-		 */
+		/**To get distance to other <b>node</b>. Note the default distance is the Euclidean Distance.*/
 		public double getDistanceToOther(CrashNode node){
 			double distance = 0.0d;
 			List<Double> attr1 = lsAttr;
@@ -163,29 +157,20 @@ public class HilOut {
 			return distance;
 		}
 		
-		/**
-		 * <p>To add <b>node</b> into its K-nearest neighbors list.</p>
-		 * @param node a CrashNode
-		 */
+		/**To add <b>node</b> into its K-nearest neighbors list. */
 		public void setNeighbor(CrashNode node){
 			if(KNeighbors.size() < K)
 				KNeighbors.add(node);
 		}
 		
-		/**
-		 * <p>To set weight( <b>sum distance to its k-nearest neighbors</b> ) of instance.</p>
-		 * @return
-		 */
+		/**To set weight( <b>sum distance to its k-nearest neighbors</b> ) of instance. */
 		public void setWeight(){		
 			for(CrashNode nodes: KNeighbors){
 				weight += getDistanceToOther(nodes);
 			}		
 		}
 		
-		/**
-		 * <p>To get weight( <b>sum distance to its k-nearest neighbors</b> ) of instance.</p>
-		 * @return
-		 */
+		/**To get weight( <b>sum distance to its k-nearest neighbors</b> ) of instance.*/
 		public double getWeight(){					
 			return weight;
 		}
