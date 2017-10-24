@@ -106,9 +106,4 @@ public class DistanceCalculatorTest {
 		Assert.assertEquals(-1, kins, 0.00001d);
 		
 	}
-	
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 0afdd3c91417c494e9980dc82aeca47d2d9abb48
