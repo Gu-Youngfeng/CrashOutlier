@@ -5,33 +5,37 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import cn.edu.whu.cstar.algorithms.GaussBased.CrashNode;
+import weka.filters.Filter;
+import weka.filters.unsupervised.attribute.LOF;
+import cn.edu.whu.cstar.algorithms.LOFs.CrashNode;
 import cn.edu.whu.cstar.utils.ARFFReader;
+import weka.core.EuclideanDistance;
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.core.neighboursearch.LinearNNSearch;
+import weka.core.neighboursearch.NearestNeighbourSearch;
 
 /***
- * <p>The <b>Gauss-Based</b> outlier detection is a classical Model-Based (or Statistical-Based) methods.
- * It assume that the instance distribution is under the Guass Distribution, and the instances with 
- * low probability is detected as the outliers. The main steps are as follows,</p>
- * 
- * <li>1. Get mean value <b>&mu;</b> of each dimension (feature).</li>
- * <li>2. Get the standard deviation <b>&sigma;</b> of each dimension (feature).</li>
- * <li>3. Get <b>p(x)</b> of each instance x, and select the top-<b>N</b> instances who
- * has the smallest p(x), they are detected as a outlier. Note that <b>p(x)</b> is defined as follows,</li>
- * 
- * <pre><b>p(x) = &prod; 1/(sqrt(2&pi;)*&sigma;j) * exp((-1)*(xj-&mu;j)^2/(2*&sigma;^2))</b></pre>
+ * <p><b>LOF</b>(Local Outlier Factor) algorithm is one of the most famous density-based outlier detection
+ *  methods, it's provided by Breuning et al. in 2000. The main steps are as follows,</p> 
+ *
+ * <li>1. Get k-distance of each instance.</li>
+ * <li>2. Get K-nearest neighbors of each instance.</li>
+ * <li>3. Get reach-distance of any pair of instances.</li>
+ * <li>4. Get local reach-ability density of each instance.</li>
+ * <li>5. Get LOF factor of each instance, the top-N instances with high LOF are detected as outliers.</li>
  */
-public class GaussBased {
-	
+public class LOFs {
 	private static Instances dataset;
 	/** top-N outliers*/
 	private static final double N = 0.1;
+	/** k-nearest neighbors*/
+	private static final int K = 10;
 	
 	private static List<CrashNode> nodeset = new ArrayList<CrashNode>();
 	
 	/**To initialize the dataset by <b>ARFFReader.read(String)</b>, then save all the instances in nodeset.*/
-	public GaussBased(String path){
+	public LOFs(String path){
 		ARFFReader reader = new ARFFReader(path);
 		dataset = reader.getDataset();
 		for(int i=0; i<dataset.numInstances(); i++){
@@ -40,46 +44,43 @@ public class GaussBased {
 			nodeset.add(node);
 		}
 		
-		calculateProbability(path);
+		try {
+			calculateLOF(path);
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+		}
 		
-		rankingByProbability();
+		rankingByLOF();
 		
-//		for(int i=0; i<nodeset.size(); i++){
-//			System.out.println(i + ">>" + nodeset.get(i).getProbability());
-//		}
-
-//		reader.showDataset();
 	}
 	
 	/***
 	 * <p> To calculate the probability of each node.</p>
 	 * @param path
+	 * @throws Exception 
 	 */
-	private static void calculateProbability(String path){
+	private static void calculateLOF(String path) throws Exception{
 
-		ARFFReader reader = new ARFFReader(path);
-		double[] mus = reader.getMu();
-		double[] stds = reader.getStd();
-
+		LOF lof = new LOF();
+		lof.setMinPointsLowerBound("2");
+		lof.setMinPointsUpperBound("6");
+//		lof.setNNSearch();
+		lof.setInputFormat(dataset);
+		dataset = Filter.useFilter(dataset, lof);
+		
 		for(int i=0; i<nodeset.size(); i++){
-			List<Double> lsAttr = nodeset.get(i).getAttr();
-			double pi = 1.0d;
 			
-			for(int j=0; j<dataset.numAttributes()-1; j++){
-				double x_j = lsAttr.get(j);
-				double currentMu = mus[j];
-				double currentStd = stds[j];
-				if(currentStd-0 == 0){ // if some dimension's std is equal to 0.
-					continue;
-				}
-				pi *= (1.0/(Math.sqrt(2.0*Math.PI)*currentStd)) * Math.exp((-1.0)*(x_j - currentMu)*(x_j - currentMu)/(2*currentStd*currentStd));
-			}
-			nodeset.get(i).setProbability(pi);
+			nodeset.get(i).setLOF(dataset.get(i).value(dataset.numAttributes()-1));
+			
+//			System.out.print(i + ">>LOF>> " + dataset.get(i).value(dataset.numAttributes()-1) + "\n");
+			
+//			nodeset.get(i).setLOF(1);
 		}
 	}
 	
-	private void rankingByProbability(){
-		Collections.sort(nodeset, new ProbabilityComparator());
+	private void rankingByLOF(){
+		Collections.sort(nodeset, new LOFComparator());
 		int topNum = (int)(N*nodeset.size());
 		
 		for(int i=0; i<topNum; i++){
@@ -89,16 +90,16 @@ public class GaussBased {
 	
 	/** To show the detection results by HilOut algorithm.*/
 	public void showResults(){
-		System.out.println("Experiments Results of <" + dataset.relationName() + "> By Using Gauss-Based Outlier Detection Method.");
+		System.out.println("\nExperiments Results of <" + dataset.relationName() + "> By Using LOF Outlier Detection Method.");
 		System.out.println("\n---------------- Detected Outliers ------------------\n");
 		for(int i=0; i<nodeset.size(); i++){
 			if(nodeset.get(i).isOutlier())
-				System.out.println("probability: " + nodeset.get(i).getProbability() + ", Label: " + nodeset.get(i).getLabel());
+				System.out.println("lof: " + nodeset.get(i).getLOF() + ", Label: " + nodeset.get(i).getLabel());
 		}
 		System.out.println("\n---------------- Detected Normals ------------------\n");
 		for(int i=0; i<nodeset.size(); i++){
 			if(!nodeset.get(i).isOutlier())
-				System.out.println("probability: " + nodeset.get(i).getProbability() + ", Label: " + nodeset.get(i).getLabel());
+				System.out.println("lof: " + nodeset.get(i).getLOF() + ", Label: " + nodeset.get(i).getLabel());
 		}
 		System.out.println("----------------------------------");
 	}
@@ -116,7 +117,7 @@ public class GaussBased {
 		
 		private List<Double> lsAttr = new ArrayList<Double>(); // feature list
 		
-		private double probability = 0.0d; // weight value
+		private double lof = 0.0d; // weight value
 		
 		/**To initialize the instance with features and class label */
 		CrashNode(Instance instance){
@@ -151,26 +152,25 @@ public class GaussBased {
 			}
 		}
 		
-		public void setProbability(double p){
-			this.probability = p;
+		public void setLOF(double lof){
+			this.lof = lof;
 		}
 		
-		public double getProbability(){
-			return this.probability;
+		public double getLOF(){
+			return this.lof;
 		}			
 	}
 }
 
-class ProbabilityComparator implements Comparator<CrashNode>{
+class LOFComparator implements Comparator<CrashNode>{
 
 	public int compare(CrashNode o1, CrashNode o2) {
-		if(o1.getProbability() > o2.getProbability()){
-			return 1;
-		}else if(o1.getProbability() < o2.getProbability()){
+		if(o1.getLOF() > o2.getLOF()){
 			return -1;
+		}else if(o1.getLOF() < o2.getLOF()){
+			return 1;
 		}else{
 			return 0;
 		}
 	}	
 }
-

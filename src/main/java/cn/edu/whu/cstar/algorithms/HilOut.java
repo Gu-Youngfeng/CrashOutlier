@@ -11,7 +11,7 @@ import weka.core.Instance;
 import weka.core.Instances;
 
 /***
- * <p><b>HilOut</b> is one of the most famous distance-based outlier detection algorithms. It's provided by XX et al.</p>
+ * <p><b>HilOut</b> is one of the most famous distance-based outlier detection algorithms. It's provided by Angiulli et al. in 2005.</p>
  * <p>It detect outliers by calculating weight of each data point, the weight is the sum of distances 
  * between one point to its k-nearest neighbors. Thus, those data points who has the higher weight are 
  * more likely to be the outliers. The basic steps are as follows,</p>
@@ -73,8 +73,7 @@ public class HilOut {
 				}	
 			}	
 			currentInstance.setWeight();
-		}
-				
+		}		
 	}
 	
 	/**To rank the instance by weight-values. */
@@ -89,7 +88,7 @@ public class HilOut {
 	}
 	
 	/** To show the detection results by HilOut algorithm.*/
-	public void showResult(){
+	public void showResults(){
 		System.out.println("Experiments Results of <" + dataset.relationName() + "> By HilOut Outlier Detection Method.");
 		System.out.println("\n---------------- Detected Outliers ------------------\n");
 		for(int i=0; i<nodeset.size(); i++){
@@ -199,9 +198,7 @@ public class HilOut {
 			}
 			System.out.println("");
 		}
-		
 	}
-
 }
 
 
@@ -223,5 +220,3 @@ class WeightComparator implements Comparator<CrashNode>{
 	}
 
 }
-
-
