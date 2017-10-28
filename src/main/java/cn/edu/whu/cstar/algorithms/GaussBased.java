@@ -1,8 +1,11 @@
 package cn.edu.whu.cstar.algorithms;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
+import cn.edu.whu.cstar.algorithms.GaussBased.CrashNode;
 import cn.edu.whu.cstar.utils.ARFFReader;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -14,16 +17,16 @@ import weka.core.Instances;
  * 
  * <li>1. Get mean value <b>&mu;</b> of each dimension (feature).</li>
  * <li>2. Get the standard deviation <b>&sigma;</b> of each dimension (feature).</li>
- * <li>3. Give probability threshold <b>&epsilon;</b>, if the probability <b>p</b> of a instance is less than 
- * the threshold, the instance is detected as a outlier, note that <b>p(x)</b> is defined as follows,</li>
+ * <li>3. Get <b>p(x)</b> of each instance x, and select the top-<b>N</b> instances who
+ * has the smallest p(x), they are detected as a outlier. Note that <b>p(x)</b> is defined as follows,</li>
  * 
  * <pre><b>p(x) = &prod; 1/(sqrt(2&pi;)*&sigma;j) * exp((-1)*(xj-&mu;j)^2/(2*&sigma;^2))</b></pre>
  */
 public class GaussBased {
 	
-private static Instances dataset;
-	
-	private static final double epsilon = 10;
+	private static Instances dataset;
+	/** top-N outliers*/
+	private static final double N = 0.1;
 	
 	private static List<CrashNode> nodeset = new ArrayList<CrashNode>();
 	
@@ -32,18 +35,72 @@ private static Instances dataset;
 		ARFFReader reader = new ARFFReader(path);
 		dataset = reader.getDataset();
 		for(int i=0; i<dataset.numInstances(); i++){
-			CrashNode node = new CrashNode(dataset.get(i));
+			Instance currentInstance = dataset.get(i);
+			CrashNode node = new CrashNode(currentInstance);
 			nodeset.add(node);
 		}
 		
-		for(int i=0; i<dataset.numAttributes()-1; i++){
-			System.out.println(dataset.attribute(i).name() + ": mu=" + reader.getMu()[i] + ", std=" + reader.getStd()[i]);
-		}
+		calculateProbability(path);
 		
+		rankingByProbability();
+		
+//		for(int i=0; i<nodeset.size(); i++){
+//			System.out.println(i + ">>" + nodeset.get(i).getProbability());
+//		}
+
+//		reader.showDataset();
 	}
 	
-	public static void calculateP(){
+	/***
+	 * <p> To calculate the probability of each node.</p>
+	 * @param path
+	 */
+	private static void calculateProbability(String path){
+
+		ARFFReader reader = new ARFFReader(path);
+		double[] mus = reader.getMu();
+		double[] stds = reader.getStd();
+
+		for(int i=0; i<nodeset.size(); i++){
+			List<Double> lsAttr = nodeset.get(i).getAttr();
+			double pi = 1.0d;
+			
+			for(int j=0; j<dataset.numAttributes()-1; j++){
+				double x_j = lsAttr.get(j);
+				double currentMu = mus[j];
+				double currentStd = stds[j];
+				if(currentStd-0 == 0){ // if some dimension's std is equal to 0.
+					continue;
+				}
+				pi *= (1.0/(Math.sqrt(2.0*Math.PI)*currentStd)) * Math.exp((-1.0)*(x_j - currentMu)*(x_j - currentMu)/(2*currentStd*currentStd));
+			}
+			nodeset.get(i).setProbability(pi);
+		}
+	}
+	
+	private void rankingByProbability(){
+		Collections.sort(nodeset, new ProbabilityComparator());
+		int topNum = (int)(N*nodeset.size());
 		
+		for(int i=0; i<topNum; i++){
+			nodeset.get(i).setPrelabel("outlier");
+		}
+	}
+	
+	/** To show the detection results by HilOut algorithm.*/
+	public void showResults(){
+		System.out.println("Experiments Results of <" + dataset.relationName() + "> By Using Gauss-Based Outlier Detection Method.");
+		System.out.println("\n---------------- Detected Outliers ------------------\n");
+		for(int i=0; i<nodeset.size(); i++){
+			if(nodeset.get(i).isOutlier())
+				System.out.println("probability: " + nodeset.get(i).getProbability() + ", Label: " + nodeset.get(i).getLabel());
+		}
+		System.out.println("\n---------------- Detected Normals ------------------\n");
+		for(int i=0; i<nodeset.size(); i++){
+			if(!nodeset.get(i).isOutlier())
+				System.out.println("probability: " + nodeset.get(i).getProbability() + ", Label: " + nodeset.get(i).getLabel());
+		}
+		System.out.println("----------------------------------");
 	}
 	
 	/***
@@ -94,8 +151,30 @@ private static Instances dataset;
 			}
 		}
 		
+		public void setProbability(double p){
+			this.probability = p;
+		}
+		
+		public double getProbability(){
+			return this.probability;
+		}
+		
 		
 	}
 
+}
+
+class ProbabilityComparator implements Comparator<CrashNode>{
+
+	public int compare(CrashNode o1, CrashNode o2) {
+		if(o1.getProbability() > o2.getProbability()){
+			return 1;
+		}else if(o1.getProbability() < o2.getProbability()){
+			return -1;
+		}else{
+			return 0;
+		}
+	}
+	
 }
 
