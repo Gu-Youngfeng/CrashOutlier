@@ -73,7 +73,8 @@ public class HilOut {
 				}	
 			}	
 			currentInstance.setWeight();
-		}				
+		}
+				
 	}
 	
 	/**To rank the instance by weight-values. */
@@ -89,10 +90,18 @@ public class HilOut {
 	
 	/** To show the detection results by HilOut algorithm.*/
 	public void showResult(){
+		System.out.println("Experiments Results of <" + dataset.relationName() + "> By HilOut Outlier Detection Method.");
+		System.out.println("\n---------------- Detected Outliers ------------------\n");
 		for(int i=0; i<nodeset.size(); i++){
 			if(nodeset.get(i).isOutlier())
-				System.out.println("Weight: " + nodeset.get(i).getWeight() + ", Label: " + nodeset.get(i).getLabel());
+				System.out.println("weight: " + nodeset.get(i).getWeight() + ", Label: " + nodeset.get(i).getLabel());
 		}
+		System.out.println("\n---------------- Detected Normals ------------------\n");
+		for(int i=0; i<nodeset.size(); i++){
+			if(!nodeset.get(i).isOutlier())
+				System.out.println("weight: " + nodeset.get(i).getWeight() + ", Label: " + nodeset.get(i).getLabel());
+		}
+		System.out.println("----------------------------------");
 	}
 	
 	/***
@@ -189,8 +198,10 @@ public class HilOut {
 				System.out.print(feature + ", ");
 			}
 			System.out.println("");
-		}		
+		}
+		
 	}
+
 }
 
 
@@ -212,3 +223,5 @@ class WeightComparator implements Comparator<CrashNode>{
 	}
 
 }
+
+
