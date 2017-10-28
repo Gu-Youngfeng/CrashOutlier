@@ -14,7 +14,7 @@ import weka.core.Instances;
  * <p><b>HilOut</b> is one of the most famous distance-based outlier detection algorithms. It's provided by XX et al.</p>
  * <p>It detect outliers by calculating weight of each data point, the weight is the sum of distances 
  * between one point to its k-nearest neighbors. Thus, those data points who has the higher weight are 
- * more likely to be the outliers.</p>
+ * more likely to be the outliers. The basic steps are as follows,</p>
  * <li>1. calculating distances of any pair of points.</li>
  * <li>2. getting <b>K</b>-nearest neighbors of each points.</li>
  * <li>3. counting the weight of each point.</li>
@@ -24,9 +24,10 @@ public class HilOut {
 	
 	private static Instances dataset;
 	
+	/** K-nearest neighbors*/
 	private static final int K = 10;
-	
-	private static final double P = 0.1;
+	/** top-N outliers*/
+	private static final double N = 0.1;
 	
 	private static List<CrashNode> nodeset = new ArrayList<CrashNode>();
 	
@@ -50,7 +51,7 @@ public class HilOut {
 		return dataset.get(index);
 	}
 	
-	public void calculateKNeighbors(){
+	private void calculateKNeighbors(){
 		int size = nodeset.size();
 		
 		/** save distance between pair of nodes into lsDistance*/
@@ -72,14 +73,13 @@ public class HilOut {
 				}	
 			}	
 			currentInstance.setWeight();
-		}
-				
+		}				
 	}
 	
 	/**To rank the instance by weight-values. */
-	public void rankingByWeights(){
+	private void rankingByWeights(){
 		nodeset.sort(new WeightComparator());
-		int outlierNum = (int)(nodeset.size()*P); 
+		int outlierNum = (int)(nodeset.size()*N); 
 		
 		for(int i=0; i<outlierNum; i++){
 			nodeset.get(i).setPrelabel("outlier");
@@ -87,6 +87,7 @@ public class HilOut {
 		
 	}
 	
+	/** To show the detection results by HilOut algorithm.*/
 	public void showResult(){
 		for(int i=0; i<nodeset.size(); i++){
 			if(nodeset.get(i).isOutlier())
@@ -188,10 +189,8 @@ public class HilOut {
 				System.out.print(feature + ", ");
 			}
 			System.out.println("");
-		}
-		
+		}		
 	}
-
 }
 
 
@@ -213,5 +212,3 @@ class WeightComparator implements Comparator<CrashNode>{
 	}
 
 }
-
-
