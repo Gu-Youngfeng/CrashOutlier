@@ -2,6 +2,8 @@ package cn.edu.whu.cstar.utils;
 
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
+import weka.filters.Filter;
+import weka.filters.unsupervised.attribute.Normalize;
 
 /***
  * <p>Class <b>ARFFReader</b> provides the reading functionality of a dataset. 
@@ -10,16 +12,23 @@ import weka.core.converters.ConverterUtils.DataSource;
  */
 public class ARFFReader {
 	
+	/** loaded dataset*/
 	private Instances dataset;
-	
+	/** mean-value &mu; in each dimension*/
 	private double[] mu;
-	
+	/** standard deviation &sigma; in each dimension*/
 	private double[] std;
 	
+	/** constructor can provide the loading and normalization functionalities */
 	public ARFFReader(String path){
 		try {
 			dataset = DataSource.read(path);
 			dataset.setClassIndex(dataset.numAttributes()-1);
+			
+			/** attribute-value normalization operation.*/
+			Normalize nm = new Normalize();
+			nm.setInputFormat(dataset);
+			dataset = Filter.useFilter(dataset, nm);
 
 		} catch (Exception e) {
 			System.out.println("Reading files error!");
@@ -77,6 +86,20 @@ public class ARFFReader {
 	/** get <b>&sigma;</b> array in each dimension.*/
 	public double[] getStd(){
 		return this.std;
+	}
+	
+	/** get the basic information of the loaded dataset.*/
+	public void showDataset(){
+		System.out.println("(1) Name:       " + dataset.relationName());
+		System.out.println("(2) Attributes: " + (dataset.numAttributes()-1));
+		System.out.println("(3) Mean-Value:\n----------------------\n");
+		for(double mus: getMu()){
+			System.out.println(mus);
+		}
+		System.out.println("(4) Standard-Deviation:\n----------------------\n");
+		for(double stds: getStd()){
+			System.out.println(stds);
+		}
 	}
 
 }
