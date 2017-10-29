@@ -15,7 +15,7 @@
   </properties>
 
   <dependencies>
-    <!-- https://mvnrepository.com/artifact/junit/junit -->
+  <!-- https://mvnrepository.com/artifact/junit/junit -->
 	<dependency>
 	    <groupId>junit</groupId>
 	    <artifactId>junit</artifactId>
@@ -23,7 +23,7 @@
 	    <scope>test</scope>
 	</dependency>
     
-    <!-- https://mvnrepository.com/artifact/nz.ac.waikato.cms.weka/weka-stable -->
+	<!-- https://mvnrepository.com/artifact/nz.ac.waikato.cms.weka/weka-stable -->
 	<dependency>
 	    <groupId>nz.ac.waikato.cms.weka</groupId>
 	    <artifactId>weka-stable</artifactId>
@@ -37,6 +37,18 @@
 	    <version>1.0.4</version>
 	</dependency>
 	
-	    
+	<!-- https://mvnrepository.com/artifact/nz.ac.waikato.cms.weka/optics_dbScan -->
+	<dependency>
+	    <groupId>nz.ac.waikato.cms.weka</groupId>
+	    <artifactId>optics_dbScan</artifactId>
+	    <version>1.0.4</version>
+	</dependency>
+		    
+	<!-- https://mvnrepository.com/artifact/nz.ac.waikato.cms.weka/isolationForest -->
+	<dependency>
+	    <groupId>nz.ac.waikato.cms.weka</groupId>
+	    <artifactId>isolationForest</artifactId>
+	    <version>1.0.2</version>
+	</dependency>
   </dependencies>
 </project>
