@@ -1,5 +1,7 @@
 # CrashOutlier
-Project <b>CrashOutlier</b> provides different outlier detection algorithms in detection task. These outlier detection algorithms include: Statistical-based(<code><i>Gauss-based</i></code>), Distance-based(<code><i>HilOut</i></code>), Density-based(<code><i>LOF</i></code>), Cluster-based(<code><i>DBSCAN</i></code>), High dimensional techniques(<code><i>Isolation Forest</i></code>).
+<b>CrashOutlier</b> provides different outlier detection algorithms in detection task. These outlier detection algorithms include: Statistical-based(<code><i>Gauss-based</i></code>), Distance-based(<code><i>HilOut</i></code>), Density-based(<code><i>LOF</i></code>), Cluster-based(<code><i>DBSCAN</i></code>), High dimensional techniques(<code><i>Isolation Forest</i></code>).
+
+This project is developed on top of <a href="https://www.cs.waikato.ac.nz/ml/weka/">Weka</a>, written in <b>Java</b>, built in <a href="http://maven.apache.org/">Maven</a>. So directly import it into your eclipse maybe a good choice.
 
 ## 1. Usage Example
 
@@ -41,7 +43,7 @@ F-MEASURE:0.5238095238095238
 ```
 
 ## 3. Limitation
-We can only load or read datasets in <code><i>arff</i></code> or <code><i>csv</i></code> formats just now. 
+We can only load or read datasets in <code><i>arff</i></code> or <code><i>csv</i></code> formats just now. In addition, the test suite is also under editing.
 
 <i>arff</i> format:
 ```
