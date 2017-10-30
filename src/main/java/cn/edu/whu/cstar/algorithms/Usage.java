@@ -10,14 +10,20 @@ public class Usage {
 
 	public static void main(String[] args) {
 
-//		GaussBased gb = new GaussBased("Jsqlparser.arff");
-//		gb.showResults();
-//		
+		GaussBased gb = new GaussBased("Jsqlparser.arff");
+		gb.showResults();
+		
 //		HilOut ho = new HilOut("Jsqlparser.arff");
 //		ho.showResults();
-		
-		LOFs lofs = new LOFs("Jsqlparser.arff");
-		lofs.showResults();
+//		
+//		LOFs lofs = new LOFs("Jsqlparser.arff");
+//		lofs.showResults();
+//		
+//		DBSCANs db = new DBSCANs("Jsqlparser.arff"); // Remember to uncomment the statements in ARFFReader.java Line#26.
+//		db.showResults();
+//		
+//		IsolationForests iforest = new IsolationForests("Jsqlparser.arff");
+//		iforest.showResults();
 		
 	}
 

@@ -2,8 +2,8 @@ package cn.edu.whu.cstar.utils;
 
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
-import weka.filters.Filter;
-import weka.filters.unsupervised.attribute.Normalize;
+//import weka.filters.Filter;
+//import weka.filters.unsupervised.attribute.Normalize;
 
 /***
  * <p>Class <b>ARFFReader</b> provides the reading functionality of a dataset. 
@@ -23,12 +23,12 @@ public class ARFFReader {
 	public ARFFReader(String path){
 		try {
 			dataset = DataSource.read(path);
-			dataset.setClassIndex(dataset.numAttributes()-1);
+			dataset.setClassIndex(dataset.numAttributes()-1); // Remember to comment it when using DBSCAN algorithm
 			
 			/** attribute-value normalization operation.*/
-			Normalize nm = new Normalize();
-			nm.setInputFormat(dataset);
-			dataset = Filter.useFilter(dataset, nm);
+//			Normalize nm = new Normalize();
+//			nm.setInputFormat(dataset);
+//			dataset = Filter.useFilter(dataset, nm);
 
 		} catch (Exception e) {
 			System.out.println("Reading files error!");

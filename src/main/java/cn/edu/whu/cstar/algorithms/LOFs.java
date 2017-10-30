@@ -7,13 +7,10 @@ import java.util.List;
 
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.LOF;
-import cn.edu.whu.cstar.algorithms.LOFs.CrashNode;
 import cn.edu.whu.cstar.utils.ARFFReader;
-import weka.core.EuclideanDistance;
+import cn.edu.whu.cstar.utils.MeasureCalculator;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.neighboursearch.LinearNNSearch;
-import weka.core.neighboursearch.NearestNeighbourSearch;
 
 /***
  * <p><b>LOF</b>(Local Outlier Factor) algorithm is one of the most famous density-based outlier detection
@@ -28,11 +25,13 @@ import weka.core.neighboursearch.NearestNeighbourSearch;
 public class LOFs {
 	private static Instances dataset;
 	/** top-N outliers*/
-	private static final double N = 0.1;
-	/** k-nearest neighbors*/
-	private static final int K = 10;
+	public static final double N = 0.1;
+	/** MinPointsLowerBound in LOF*/
+	public static final String MinPointsLowerBound = "2";
+	/** MinPointsUpperBound in LOF*/
+	public static final String MinPointsUpperBound = "6";
 	
-	private static List<CrashNode> nodeset = new ArrayList<CrashNode>();
+	private static List<LOFNode> nodeset = new ArrayList<LOFNode>();
 	
 	/**To initialize the dataset by <b>ARFFReader.read(String)</b>, then save all the instances in nodeset.*/
 	public LOFs(String path){
@@ -40,7 +39,7 @@ public class LOFs {
 		dataset = reader.getDataset();
 		for(int i=0; i<dataset.numInstances(); i++){
 			Instance currentInstance = dataset.get(i);
-			CrashNode node = new CrashNode(currentInstance);
+			LOFNode node = new LOFNode(currentInstance);
 			nodeset.add(node);
 		}
 		
@@ -63,8 +62,8 @@ public class LOFs {
 	private static void calculateLOF(String path) throws Exception{
 
 		LOF lof = new LOF();
-		lof.setMinPointsLowerBound("2");
-		lof.setMinPointsUpperBound("6");
+		lof.setMinPointsLowerBound(MinPointsLowerBound);
+		lof.setMinPointsUpperBound(MinPointsUpperBound);
 //		lof.setNNSearch();
 		lof.setInputFormat(dataset);
 		dataset = Filter.useFilter(dataset, lof);
@@ -73,9 +72,6 @@ public class LOFs {
 			
 			nodeset.get(i).setLOF(dataset.get(i).value(dataset.numAttributes()-1));
 			
-//			System.out.print(i + ">>LOF>> " + dataset.get(i).value(dataset.numAttributes()-1) + "\n");
-			
-//			nodeset.get(i).setLOF(1);
 		}
 	}
 	
@@ -102,69 +98,80 @@ public class LOFs {
 				System.out.println("lof: " + nodeset.get(i).getLOF() + ", Label: " + nodeset.get(i).getLabel());
 		}
 		System.out.println("----------------------------------");
+		
+		MeasureCalculator mc = new MeasureCalculator(nodeset);
+		
+		System.out.println("TP:" + mc.getTP());
+		System.out.println("TN:" + mc.getTN());
+		System.out.println("FP:" + mc.getFP());
+		System.out.println("FN:" + mc.getFN());
+		
+		System.out.println("PRECISION:" + mc.getPRECISION());
+		System.out.println("RECALL:" + mc.getRECALL());
+		System.out.println("F-MEASURE:" + mc.getFMEASURE());
 	}
 	
-	/***
-	 * <p>This class <b>CrashNode</b> is used to simulate the characteristic of each instance.</p>
-	 * <p></p>
-	 *
-	 */
-	class CrashNode{
-		
-		private String label; // class label
-		
-		private String prelabel = "normal"; // outlier or normal
-		
-		private List<Double> lsAttr = new ArrayList<Double>(); // feature list
-		
-		private double lof = 0.0d; // weight value
-		
-		/**To initialize the instance with features and class label */
-		CrashNode(Instance instance){
-			int lenAttr = instance.numAttributes();
-			label = instance.stringValue(lenAttr-1); // set true label
-			for(int i=0; i<lenAttr-1; i++){ // set feature-values
-				lsAttr.add(instance.value(i));
-			}
-		}
-		
-		/**<p>To get <b>feature-values</b> of instance. */
-		public List<Double> getAttr(){
-			return lsAttr;
-		}
-		
-		/**To save predicted flag, i.e., '<b>normal</b>' or '<b>outlier</b>'.*/
-		public void setPrelabel(String flag){
-			this.prelabel = flag;
-		}
-		
-		/**To get the original class label.*/
-		public String getLabel(){
-			return label;
-		}
-		
-		/**To judge whether the instance is predicted as a outlier. */
-		public boolean isOutlier(){
-			if(prelabel == "outlier"){
-				return true;
-			}else{
-				return false;
-			}
-		}
-		
-		public void setLOF(double lof){
-			this.lof = lof;
-		}
-		
-		public double getLOF(){
-			return this.lof;
-		}			
-	}
 }
 
-class LOFComparator implements Comparator<CrashNode>{
+/***
+ * <p>This class <b>LOFNode</b> is used to simulate the characteristic of each instance.</p>
+ *
+ */
+class LOFNode extends CrashNode{
+	
+	private String label; // class label
+	
+	private String prelabel = "normal"; // outlier or normal
+	
+	private List<Double> lsAttr = new ArrayList<Double>(); // feature list
+	
+	private double lof = 0.0d; // weight value
+	
+	/**To initialize the instance with features and class label */
+	LOFNode(Instance instance){
+		int lenAttr = instance.numAttributes();
+		label = instance.stringValue(lenAttr-1); // set true label
+		for(int i=0; i<lenAttr-1; i++){ // set feature-values
+			lsAttr.add(instance.value(i));
+		}
+	}
+	
+	/**<p>To get <b>feature-values</b> of instance. */
+	public List<Double> getAttr(){
+		return lsAttr;
+	}
+	
+	/**To save predicted flag, i.e., '<b>normal</b>' or '<b>outlier</b>'.*/
+	public void setPrelabel(String flag){
+		this.prelabel = flag;
+	}
+	
+	/**To get the original class label.*/
+	public String getLabel(){
+		return label;
+	}
+	
+	/**To judge whether the instance is predicted as a outlier. */
+	public boolean isOutlier(){
+		if(prelabel == "outlier"){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	public void setLOF(double lof){
+		this.lof = lof;
+	}
+	
+	public double getLOF(){
+		return this.lof;
+	}			
+}
 
-	public int compare(CrashNode o1, CrashNode o2) {
+class LOFComparator implements Comparator<LOFNode>{
+
+	public int compare(LOFNode o1, LOFNode o2) {
 		if(o1.getLOF() > o2.getLOF()){
 			return -1;
 		}else if(o1.getLOF() < o2.getLOF()){

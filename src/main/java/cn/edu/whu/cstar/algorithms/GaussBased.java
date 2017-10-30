@@ -5,8 +5,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import cn.edu.whu.cstar.algorithms.GaussBased.CrashNode;
 import cn.edu.whu.cstar.utils.ARFFReader;
+import cn.edu.whu.cstar.utils.MeasureCalculator;
 import weka.core.Instance;
 import weka.core.Instances;
 
@@ -26,9 +26,9 @@ public class GaussBased {
 	
 	private static Instances dataset;
 	/** top-N outliers*/
-	private static final double N = 0.1;
+	public static final double N = 0.1;
 	
-	private static List<CrashNode> nodeset = new ArrayList<CrashNode>();
+	private static List<GAUNode> nodeset = new ArrayList<GAUNode>();
 	
 	/**To initialize the dataset by <b>ARFFReader.read(String)</b>, then save all the instances in nodeset.*/
 	public GaussBased(String path){
@@ -36,7 +36,7 @@ public class GaussBased {
 		dataset = reader.getDataset();
 		for(int i=0; i<dataset.numInstances(); i++){
 			Instance currentInstance = dataset.get(i);
-			CrashNode node = new CrashNode(currentInstance);
+			GAUNode node = new GAUNode(currentInstance);
 			nodeset.add(node);
 		}
 		
@@ -101,69 +101,84 @@ public class GaussBased {
 				System.out.println("probability: " + nodeset.get(i).getProbability() + ", Label: " + nodeset.get(i).getLabel());
 		}
 		System.out.println("----------------------------------");
+		
+		MeasureCalculator mc = new MeasureCalculator(nodeset);
+		
+		System.out.println("TP:" + mc.getTP());
+		System.out.println("TN:" + mc.getTN());
+		System.out.println("FP:" + mc.getFP());
+		System.out.println("FN:" + mc.getFN());
+		
+		System.out.println("PRECISION:" + mc.getPRECISION());
+		System.out.println("RECALL:" + mc.getRECALL());
+		System.out.println("F-MEASURE:" + mc.getFMEASURE());
 	}
 	
-	/***
-	 * <p>This class <b>CrashNode</b> is used to simulate the characteristic of each instance.</p>
-	 * <p></p>
-	 *
-	 */
-	class CrashNode{
-		
-		private String label; // class label
-		
-		private String prelabel = "normal"; // outlier or normal
-		
-		private List<Double> lsAttr = new ArrayList<Double>(); // feature list
-		
-		private double probability = 0.0d; // weight value
-		
-		/**To initialize the instance with features and class label */
-		CrashNode(Instance instance){
-			int lenAttr = instance.numAttributes();
-			label = instance.stringValue(lenAttr-1); // set true label
-			for(int i=0; i<lenAttr-1; i++){ // set feature-values
-				lsAttr.add(instance.value(i));
-			}
-		}
-		
-		/**<p>To get <b>feature-values</b> of instance. */
-		public List<Double> getAttr(){
-			return lsAttr;
-		}
-		
-		/**To save predicted flag, i.e., '<b>normal</b>' or '<b>outlier</b>'.*/
-		public void setPrelabel(String flag){
-			this.prelabel = flag;
-		}
-		
-		/**To get the original class label.*/
-		public String getLabel(){
-			return label;
-		}
-		
-		/**To judge whether the instance is predicted as a outlier. */
-		public boolean isOutlier(){
-			if(prelabel == "outlier"){
-				return true;
-			}else{
-				return false;
-			}
-		}
-		
-		public void setProbability(double p){
-			this.probability = p;
-		}
-		
-		public double getProbability(){
-			return this.probability;
-		}			
-	}
+	
 }
 
-class ProbabilityComparator implements Comparator<CrashNode>{
+/***
+ * <p>This class <b>GAUNode</b> is used to simulate the characteristic of each instance.</p>
+ * <p></p>
+ *
+ */
+class GAUNode extends CrashNode{
+	
+	private String label; // class label
+	
+	private String prelabel = "normal"; // outlier or normal
+	
+	private List<Double> lsAttr = new ArrayList<Double>(); // feature list
+	
+	private double probability = 0.0d; // weight value
+	
+	/**To initialize the instance with features and class label */
+	GAUNode(Instance instance){
+		int lenAttr = instance.numAttributes();
+		label = instance.stringValue(lenAttr-1); // set true label
+		for(int i=0; i<lenAttr-1; i++){ // set feature-values
+			lsAttr.add(instance.value(i));
+		}
+	}
+	
+	/**<p>To get <b>feature-values</b> of instance. */
+	public List<Double> getAttr(){
+		return lsAttr;
+	}
+	
+	/**To save predicted flag, i.e., '<b>normal</b>' or '<b>outlier</b>'.*/
+	public void setPrelabel(String flag){
+		this.prelabel = flag;
+	}
+	
+	/**To get the original class label.*/
+	@Override
+	public String getLabel(){
+		return label;
+	}
+	
+	/**To judge whether the instance is predicted as a outlier. */
+	@Override
+	public boolean isOutlier(){
+		if(prelabel == "outlier"){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	public void setProbability(double p){
+		this.probability = p;
+	}
+	
+	public double getProbability(){
+		return this.probability;
+	}			
+}
 
-	public int compare(CrashNode o1, CrashNode o2) {
+class ProbabilityComparator implements Comparator<GAUNode>{
+
+	public int compare(GAUNode o1, GAUNode o2) {
 		if(o1.getProbability() > o2.getProbability()){
 			return 1;
 		}else if(o1.getProbability() < o2.getProbability()){
