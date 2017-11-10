@@ -25,11 +25,11 @@ import weka.core.Instances;
 public class LOFs {
 	private static Instances dataset;
 	/** top-N outliers*/
-	public static final double N = 0.1;
+	public static final double N = 0.05;
 	/** MinPointsLowerBound in LOF*/
 	public static final String MinPointsLowerBound = "2";
 	/** MinPointsUpperBound in LOF*/
-	public static final String MinPointsUpperBound = "6";
+	public static final String MinPointsUpperBound = "5";
 	
 	private static List<LOFNode> nodeset = new ArrayList<LOFNode>();
 	
@@ -109,6 +109,7 @@ public class LOFs {
 		System.out.println("PRECISION:" + mc.getPRECISION());
 		System.out.println("RECALL:" + mc.getRECALL());
 		System.out.println("F-MEASURE:" + mc.getFMEASURE());
+		System.out.println("ACCURACY:" + mc.getCORRECTRATIO());
 	}
 	
 }
