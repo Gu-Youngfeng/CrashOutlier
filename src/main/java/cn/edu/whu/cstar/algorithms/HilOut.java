@@ -27,7 +27,7 @@ public class HilOut {
 	/** K-nearest neighbors*/
 	public static final int K = 10;
 	/** top-N outliers*/
-	public static final double N = 0.1;
+	public static final double N = 0.05;
 	
 	private static List<HILNode> nodeset = new ArrayList<HILNode>();
 	
@@ -112,6 +112,7 @@ public class HilOut {
 		System.out.println("PRECISION:" + mc.getPRECISION());
 		System.out.println("RECALL:" + mc.getRECALL());
 		System.out.println("F-MEASURE:" + mc.getFMEASURE());
+		System.out.println("ACCURACY:" + mc.getCORRECTRATIO());
 
 	}
 	
