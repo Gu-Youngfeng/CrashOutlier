@@ -26,7 +26,7 @@ public class GaussBased {
 	
 	private static Instances dataset;
 	/** top-N outliers*/
-	public static final double N = 0.1;
+	public static final double N = 0.05;
 	
 	private static List<GAUNode> nodeset = new ArrayList<GAUNode>();
 	
