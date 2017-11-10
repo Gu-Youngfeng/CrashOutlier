@@ -23,9 +23,9 @@ public class IsolationForests {
 	/** Number of instances in each iTree*/
 	public static final int SubSampleSize = 40;
 	/** Number of iTrees*/
-	public static final int TreeNum = 20;
+	public static final int TreeNum = 25;
 	/** Anomaly score threshold*/
-	public static final double s = 0.6;
+	public static final double s = 0.62;
 	
 	private static List<IFNode> nodeset = new ArrayList<IFNode>();
 	
@@ -93,6 +93,7 @@ public class IsolationForests {
 		System.out.println("PRECISION:" + mc.getPRECISION());
 		System.out.println("RECALL:" + mc.getRECALL());
 		System.out.println("F-MEASURE:" + mc.getFMEASURE());
+		System.out.println("ACCURACY:" + mc.getCORRECTRATIO());
 	}
 	
 	
