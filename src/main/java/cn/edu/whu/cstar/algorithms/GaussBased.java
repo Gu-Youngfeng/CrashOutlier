@@ -104,14 +104,16 @@ public class GaussBased {
 		
 		MeasureCalculator mc = new MeasureCalculator(nodeset);
 		
-		System.out.println("TP:" + mc.getTP());
-		System.out.println("TN:" + mc.getTN());
-		System.out.println("FP:" + mc.getFP());
-		System.out.println("FN:" + mc.getFN());
+		System.out.println("TP: " + mc.getTP());
+		System.out.println("TN: " + mc.getTN());
+		System.out.println("FP: " + mc.getFP());
+		System.out.println("FN: " + mc.getFN());
 		
-		System.out.println("PRECISION:" + mc.getPRECISION());
-		System.out.println("RECALL:" + mc.getRECALL());
-		System.out.println("F-MEASURE:" + mc.getFMEASURE());
+		System.out.println("PRECISION: " + mc.getPRECISION());
+		System.out.println("RECALL: " + mc.getRECALL());
+		System.out.println("F-MEASURE: " + mc.getFMEASURE());
+		System.out.println("ACCURACY: " + mc.getCORRECTRATIO());
+		System.out.println("ACCURACY:" + mc.getCORRECTRATIO());
 	}
 	
 	
