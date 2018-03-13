@@ -28,6 +28,8 @@ public class MeasureCalculator{
 	
 	private double fmeasure = 0.0d;
 	
+	private double correctratio = 0.0d;
+	
 	public MeasureCalculator(List<? extends CrashNode> ls){
 		this.lsNode = ls;
 		
@@ -42,6 +44,7 @@ public class MeasureCalculator{
 		setPRECISION();
 		setRECALL();
 		setFMEASURE();
+		setCORRECTRATIO();
 	}
 	
 	private void setTP(){
@@ -104,6 +107,10 @@ public class MeasureCalculator{
 		fmeasure = 2.0*precision*recall/(precision + recall)*1.0;
 	}
 	
+	private void setCORRECTRATIO(){
+		correctratio = (tp + tn)*1.0/(tp + fp + tn + fn)*1.0;
+	}
+	
 	/** To get FP from Confusion Matrix*/
 	public int getFN(){
 		return this.fn;
@@ -137,6 +144,21 @@ public class MeasureCalculator{
 	/** To get f-measure from Confusion Matrix*/
 	public double getFMEASURE(){
 		return this.fmeasure;
+	}
+	
+	/** To get correct ratio from Confusion Matrix*/
+	public double getCORRECTRATIO(){
+		return this.correctratio;
+	}
+	
+	/** To get detection rate form Confusion Matrix*/
+	public double getDetectRate(){
+		return getTP()*1.0/(getTP()+getFN())*1.0;
+	}
+	
+	/** To get FP rate form Confusion Matrix*/
+	public double getFPRate(){
+		return getFP()*1.0/(getFP()+getTN())*1.0;
 	}
 
 }

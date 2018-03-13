@@ -25,7 +25,7 @@ public class HilOut {
 	private static Instances dataset;
 	
 	/** K-nearest neighbors*/
-	public static final int K = 10;
+	public static final int K = 5;
 	/** top-N outliers*/
 	public static final double N = 0.1;
 	
@@ -35,6 +35,10 @@ public class HilOut {
 	
 	/**To initialize the dataset by <b>ARFFReader.read(String)</b>, then save all the instances in nodeset.*/
 	public HilOut(String path){
+		
+		nodeset.clear();
+		lsDistance.clear();
+		
 		ARFFReader reader = new ARFFReader(path);
 		dataset = reader.getDataset();
 		for(int i=0; i<dataset.numInstances(); i++){
@@ -109,13 +113,25 @@ public class HilOut {
 		System.out.println("FP:" + mc.getFP());
 		System.out.println("FN:" + mc.getFN());
 		
-		System.out.println("PRECISION:" + mc.getPRECISION());
-		System.out.println("RECALL:" + mc.getRECALL());
-		System.out.println("F-MEASURE:" + mc.getFMEASURE());
+//		System.out.println("PRECISION:" + mc.getPRECISION());
+//		System.out.println("RECALL:" + mc.getRECALL());
+//		System.out.println("F-MEASURE:" + mc.getFMEASURE());
+//		System.out.println("ACCURACY:" + mc.getCORRECTRATIO());
+		
+		System.out.println("Detection Rate: " + mc.getDetectRate());
+		System.out.println("FP Rate       : " + mc.getFPRate());
 
 	}
 	
+	public double getDetectionRate(){
+		MeasureCalculator mc = new MeasureCalculator(nodeset);
+		return mc.getDetectRate();
+	}
 	
+	public double getFPRate(){
+		MeasureCalculator mc = new MeasureCalculator(nodeset);
+		return mc.getFPRate();
+	}
 }
 
 /***

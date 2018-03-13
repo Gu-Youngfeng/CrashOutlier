@@ -18,7 +18,7 @@ import weka.clusterers.DBSCAN;
 public class DBSCANs {
 	private static Instances dataset;
 	/** Epsilon in DBSCAN*/
-	public static final double Epsilon = 1.5d;
+	public static final double Epsilon = 1.4d;
 	/** MinPoints in DBSCAN*/
 	public static final int MinPoints = 5;
 	
@@ -26,7 +26,10 @@ public class DBSCANs {
 	
 	/**To initialize the dataset by <b>ARFFReader.read(String)</b>, then save all the instances in nodeset.*/
 	public DBSCANs(String path){
-		ARFFReader reader = new ARFFReader(path);
+		
+		nodeset.clear();
+		
+		ARFFReader reader = new ARFFReader(path, true);
 		dataset = reader.getDataset();
 //		dataset.deleteAttributeAt(dataset.numAttributes()-1); //DBSCAN is a unsuperviesd method.
 		for(int i=0; i<dataset.numInstances(); i++){
@@ -41,7 +44,6 @@ public class DBSCANs {
 			
 			e.printStackTrace();
 		}
-
 	}
 	
 	/***
@@ -92,13 +94,25 @@ public class DBSCANs {
 		System.out.println("TN:" + mc.getTN());
 		System.out.println("FP:" + mc.getFP());
 		System.out.println("FN:" + mc.getFN());
+//		
+//		System.out.println("PRECISION:" + mc.getPRECISION());
+//		System.out.println("RECALL:" + mc.getRECALL());
+//		System.out.println("F-MEASURE:" + mc.getFMEASURE());
+//		System.out.println("ACCURACY:" + mc.getCORRECTRATIO());
 		
-		System.out.println("PRECISION:" + mc.getPRECISION());
-		System.out.println("RECALL:" + mc.getRECALL());
-		System.out.println("F-MEASURE:" + mc.getFMEASURE());
+		System.out.println("Detection Rate: " + mc.getDetectRate());
+		System.out.println("FP Rate       : " + mc.getFPRate());
 	}
 	
+	public double getDetectionRate(){
+		MeasureCalculator mc = new MeasureCalculator(nodeset);
+		return mc.getDetectRate();
+	}
 	
+	public double getFPRate(){
+		MeasureCalculator mc = new MeasureCalculator(nodeset);
+		return mc.getFPRate();
+	}
 }
 
 /***

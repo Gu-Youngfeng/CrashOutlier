@@ -1,5 +1,9 @@
 package cn.edu.whu.cstar.utils;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
 //import weka.filters.Filter;
@@ -18,9 +22,12 @@ public class ARFFReader {
 	private double[] mu;
 	/** standard deviation &sigma; in each dimension*/
 	private double[] std;
+	/** labels in dataset*/
+	private Set<String> labels = new HashSet<String>();
 	
 	/** constructor can provide the loading and normalization functionalities */
 	public ARFFReader(String path){
+		/************************ Loading the dataset ****************************/
 		try {
 			dataset = DataSource.read(path);
 			dataset.setClassIndex(dataset.numAttributes()-1); // Remember to comment it when using DBSCAN algorithm
@@ -31,13 +38,59 @@ public class ARFFReader {
 //			dataset = Filter.useFilter(dataset, nm);
 
 		} catch (Exception e) {
-			System.out.println("Reading files error!");
+			System.out.println("Loading files error!");
+			e.printStackTrace();
+		}
+		/****************** Collecting the labels of dataset *********************/
+		for(Instance ins: dataset){
+			String label = ins.stringValue(dataset.classAttribute());
+			labels.add(label);
+		}
+		
+		/**************** Calculating the parameters of mu and std ***************/
+		try{
+			setMu();
+			setStd();
+		}catch(Exception e){
+			System.out.println("Calculating parameters error!");
 			e.printStackTrace();
 		}
 		
-		setMu();
+	}
+	
+	/** constructor can provide the loading and normalization functionalities.
+	 *  this ARFFReader is only used for DBSCAN.
+	 *  */
+	public ARFFReader(String path, boolean flag){
+		/************************ Loading the dataset ****************************/
+		try {
+			dataset = DataSource.read(path);
+//			dataset.setClassIndex(dataset.numAttributes()-1); // Remember to comment it when using DBSCAN algorithm
+			
+			/** attribute-value normalization operation.*/
+//			Normalize nm = new Normalize();
+//			nm.setInputFormat(dataset);
+//			dataset = Filter.useFilter(dataset, nm);
+
+		} catch (Exception e) {
+			System.out.println("Loading files error!");
+			e.printStackTrace();
+		}
+		/****************** Collecting the labels of dataset *********************/
+//		for(Instance ins: dataset){
+//			String label = ins.stringValue(dataset.classAttribute());
+//			labels.add(label);
+//		}
 		
-		setStd();
+		/**************** Calculating the parameters of mu and std ***************/
+		try{
+			setMu();
+			setStd();
+		}catch(Exception e){
+			System.out.println("Calculating parameters error!");
+			e.printStackTrace();
+		}
+		
 	}
 	
 	/**get Dataset (Instances) from file content.*/
@@ -45,6 +98,7 @@ public class ARFFReader {
 		return dataset;
 	}
 	
+	/**set mean value of each attribute*/
 	public void setMu(){
 		int attrNum = this.dataset.numAttributes();
 		int insNum = this.dataset.numInstances();
@@ -66,6 +120,7 @@ public class ARFFReader {
 		return this.mu;
 	}
 	
+	/**set standard divation of each attribute*/
 	public void setStd(){
 		int attrNum = this.dataset.numAttributes();
 		int insNum = this.dataset.numInstances();
@@ -90,16 +145,11 @@ public class ARFFReader {
 	
 	/** get the basic information of the loaded dataset.*/
 	public void showDataset(){
-		System.out.println("(1) Name:       " + dataset.relationName());
-		System.out.println("(2) Attributes: " + (dataset.numAttributes()-1));
-		System.out.println("(3) Mean-Value:\n----------------------\n");
-		for(double mus: getMu()){
-			System.out.println(mus);
-		}
-		System.out.println("(4) Standard-Deviation:\n----------------------\n");
-		for(double stds: getStd()){
-			System.out.println(stds);
-		}
+		System.out.println("----------   Dataset Basic Information   ----------");
+		System.out.println("(1) Relation Name : " + dataset.relationName());
+		System.out.println("(2) Instances     : " + dataset.numInstances());
+		System.out.println("(3) Attributes    : " + (dataset.numAttributes()-1));
+		System.out.println("(4) Class Labels  : " + labels);
 	}
 
 }

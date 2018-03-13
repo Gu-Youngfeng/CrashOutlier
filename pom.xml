@@ -30,6 +30,14 @@
 	    <version>3.8.1</version>
 	</dependency>
 	
+	<!-- https://mvnrepository.com/artifact/nz.ac.waikato.cms.weka/LibSVM -->
+	<dependency>
+	    <groupId>nz.ac.waikato.cms.weka</groupId>
+	    <artifactId>LibSVM</artifactId>
+	    <version>1.0.10</version>
+	</dependency>
+
+	
 	<!-- https://mvnrepository.com/artifact/nz.ac.waikato.cms.weka/localOutlierFactor -->
 	<dependency>
 	    <groupId>nz.ac.waikato.cms.weka</groupId>
@@ -50,5 +58,21 @@
 	    <artifactId>isolationForest</artifactId>
 	    <version>1.0.2</version>
 	</dependency>
+	
+	<!-- https://mvnrepository.com/artifact/nz.ac.waikato.cms.weka/metaCost -->
+	<dependency>
+	    <groupId>nz.ac.waikato.cms.weka</groupId>
+	    <artifactId>metaCost</artifactId>
+	    <version>1.0.3</version>
+	</dependency>
+	
+	<!-- https://mvnrepository.com/artifact/nz.ac.waikato.cms.weka/SMOTE -->
+	<dependency>
+	    <groupId>nz.ac.waikato.cms.weka</groupId>
+	    <artifactId>SMOTE</artifactId>
+	    <version>1.0.3</version>
+	</dependency>
+	
   </dependencies>
+
 </project>

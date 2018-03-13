@@ -11,7 +11,11 @@ import weka.core.Instances;
 
 /***
  * <p><b>Isolation Forest</b> is a classical model-based outlier detection algorithm which can be used 
- * in a large and high-dimension dataset. It's provided by Liu et al. in 2008.</p> 
+ * in a large and high-dimension dataset. It's provided by Liu et al. in 2008. </p>
+ * <pre>Liu, Fei Tony, M. T. Kai, and Z. H. Zhou. "Isolation Forest." ICDM2008.</pre>
+ * <p>Note that in IForest algorithm, each data point will be assigned a anomaly score <b>s</b> in the range between 0 and 1.
+ * If the <b>s &in; (0.5, 1]</b>, then this point have high probability to be detected as a outlier;
+ * else if the <b>s &in; [0, 0.5)</b>, then this point can be regarded as an normal.</p> 
  *
  * <li>1. Randomly selecting some subsets of dataset.</li>
  * <li>2. Using these subsets to construct <b>iTrees</b> by randomly split a randomly selected feature.</li>
@@ -21,16 +25,19 @@ public class IsolationForests {
 	
 	private static Instances dataset;
 	/** Number of instances in each iTree*/
-	public static final int SubSampleSize = 40;
+	public static final int SubSampleSize = 30;
 	/** Number of iTrees*/
-	public static final int TreeNum = 20;
+	public static final int TreeNum = 15;
 	/** Anomaly score threshold*/
-	public static final double s = 0.6;
+	public static final double s = 0.5;
 	
 	private static List<IFNode> nodeset = new ArrayList<IFNode>();
 	
 	/**To initialize the dataset by <b>ARFFReader.read(String)</b>, then save all the instances in nodeset.*/
 	public IsolationForests(String path){
+		
+		nodeset.clear();
+		
 		ARFFReader reader = new ARFFReader(path);
 		dataset = reader.getDataset();
 		
@@ -73,13 +80,15 @@ public class IsolationForests {
 		System.out.println("\nExperiments Results of <" + dataset.relationName() + "> By Using Isolation Forest Outlier Detection Method.");
 		System.out.println("\n---------------- Detected Outliers ------------------\n");
 		for(int i=0; i<nodeset.size(); i++){
-			if(nodeset.get(i).isOutlier())
-				System.out.println(nodeset.get(i).getScore() + ", Label: " + nodeset.get(i).getLabel());
+			if(nodeset.get(i).isOutlier()){
+//				System.out.println(nodeset.get(i).getScore() + ", Label: " + nodeset.get(i).getLabel());
+			}
 		}
 		System.out.println("\n---------------- Detected Normals ------------------\n");
 		for(int i=0; i<nodeset.size(); i++){
-			if(!nodeset.get(i).isOutlier())
-				System.out.println(nodeset.get(i).getScore() + ", Label: " + nodeset.get(i).getLabel());
+			if(!nodeset.get(i).isOutlier()){
+//				System.out.println(nodeset.get(i).getScore() + ", Label: " + nodeset.get(i).getLabel());
+			}
 		}
 		System.out.println("----------------------------------");
 
@@ -90,9 +99,24 @@ public class IsolationForests {
 		System.out.println("FP:" + mc.getFP());
 		System.out.println("FN:" + mc.getFN());
 		
-		System.out.println("PRECISION:" + mc.getPRECISION());
-		System.out.println("RECALL:" + mc.getRECALL());
-		System.out.println("F-MEASURE:" + mc.getFMEASURE());
+//		System.out.println("PRECISION:" + mc.getPRECISION());
+//		System.out.println("RECALL:" + mc.getRECALL());
+//		System.out.println("F-MEASURE:" + mc.getFMEASURE());
+//		System.out.println("ACCURACY:" + mc.getCORRECTRATIO());
+		
+		System.out.println("Detection Rate: " + mc.getDetectRate());
+		System.out.println("FP Rate       : " + mc.getFPRate());
+		
+	}
+	
+	public double getDetectionRate(){
+		MeasureCalculator mc = new MeasureCalculator(nodeset);
+		return mc.getDetectRate();
+	}
+	
+	public double getFPRate(){
+		MeasureCalculator mc = new MeasureCalculator(nodeset);
+		return mc.getFPRate();
 	}
 	
 	

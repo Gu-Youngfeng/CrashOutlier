@@ -9,8 +9,10 @@ import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.LOF;
 import cn.edu.whu.cstar.utils.ARFFReader;
 import cn.edu.whu.cstar.utils.MeasureCalculator;
+import weka.core.EuclideanDistance;
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.core.neighboursearch.LinearNNSearch;
 
 /***
  * <p><b>LOF</b>(Local Outlier Factor) algorithm is one of the most famous density-based outlier detection
@@ -27,14 +29,17 @@ public class LOFs {
 	/** top-N outliers*/
 	public static final double N = 0.1;
 	/** MinPointsLowerBound in LOF*/
-	public static final String MinPointsLowerBound = "2";
+	public static final String MinPointsLowerBound = "20";
 	/** MinPointsUpperBound in LOF*/
-	public static final String MinPointsUpperBound = "6";
+	public static final String MinPointsUpperBound = "40";
 	
 	private static List<LOFNode> nodeset = new ArrayList<LOFNode>();
 	
 	/**To initialize the dataset by <b>ARFFReader.read(String)</b>, then save all the instances in nodeset.*/
 	public LOFs(String path){
+		
+		nodeset.clear();
+		
 		ARFFReader reader = new ARFFReader(path);
 		dataset = reader.getDataset();
 		for(int i=0; i<dataset.numInstances(); i++){
@@ -65,6 +70,10 @@ public class LOFs {
 		lof.setMinPointsLowerBound(MinPointsLowerBound);
 		lof.setMinPointsUpperBound(MinPointsUpperBound);
 //		lof.setNNSearch();
+		LinearNNSearch searcher = new LinearNNSearch();
+//		searcher.setDistanceFunction(new ManhattanDistance());
+		searcher.setDistanceFunction(new EuclideanDistance());
+		lof.setNNSearch(searcher);
 		lof.setInputFormat(dataset);
 		dataset = Filter.useFilter(dataset, lof);
 		
@@ -106,9 +115,23 @@ public class LOFs {
 		System.out.println("FP:" + mc.getFP());
 		System.out.println("FN:" + mc.getFN());
 		
-		System.out.println("PRECISION:" + mc.getPRECISION());
-		System.out.println("RECALL:" + mc.getRECALL());
-		System.out.println("F-MEASURE:" + mc.getFMEASURE());
+//		System.out.println("PRECISION:" + mc.getPRECISION());
+//		System.out.println("RECALL:" + mc.getRECALL());
+//		System.out.println("F-MEASURE:" + mc.getFMEASURE());
+//		System.out.println("ACCURACY:" + mc.getCORRECTRATIO());
+		
+		System.out.println("Detection Rate: " + mc.getDetectRate());
+		System.out.println("FP Rate       : " + mc.getFPRate());
+	}
+	
+	public double getDetectionRate(){
+		MeasureCalculator mc = new MeasureCalculator(nodeset);
+		return mc.getDetectRate();
+	}
+	
+	public double getFPRate(){
+		MeasureCalculator mc = new MeasureCalculator(nodeset);
+		return mc.getFPRate();
 	}
 	
 }

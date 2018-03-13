@@ -32,6 +32,9 @@ public class GaussBased {
 	
 	/**To initialize the dataset by <b>ARFFReader.read(String)</b>, then save all the instances in nodeset.*/
 	public GaussBased(String path){
+		
+		nodeset.clear();
+		
 		ARFFReader reader = new ARFFReader(path);
 		dataset = reader.getDataset();
 		for(int i=0; i<dataset.numInstances(); i++){
@@ -104,17 +107,30 @@ public class GaussBased {
 		
 		MeasureCalculator mc = new MeasureCalculator(nodeset);
 		
-		System.out.println("TP:" + mc.getTP());
-		System.out.println("TN:" + mc.getTN());
-		System.out.println("FP:" + mc.getFP());
-		System.out.println("FN:" + mc.getFN());
+		System.out.println("TP: " + mc.getTP());
+		System.out.println("TN: " + mc.getTN());
+		System.out.println("FP: " + mc.getFP());
+		System.out.println("FN: " + mc.getFN());
 		
-		System.out.println("PRECISION:" + mc.getPRECISION());
-		System.out.println("RECALL:" + mc.getRECALL());
-		System.out.println("F-MEASURE:" + mc.getFMEASURE());
+//		System.out.println("PRECISION: " + mc.getPRECISION());
+//		System.out.println("RECALL: " + mc.getRECALL());
+//		System.out.println("F-MEASURE: " + mc.getFMEASURE());
+//		System.out.println("ACCURACY: " + mc.getCORRECTRATIO());
+//		System.out.println("ACCURACY:" + mc.getCORRECTRATIO());
+		
+		System.out.println("Detection Rate: " + mc.getDetectRate());
+		System.out.println("FP Rate       : " + mc.getFPRate());
 	}
 	
+	public double getDetectionRate(){
+		MeasureCalculator mc = new MeasureCalculator(nodeset);
+		return mc.getDetectRate();
+	}
 	
+	public double getFPRate(){
+		MeasureCalculator mc = new MeasureCalculator(nodeset);
+		return mc.getFPRate();
+	}
 }
 
 /***
