@@ -26,7 +26,7 @@ public class GaussBased {
 	
 	private static Instances dataset;
 	/** top-N outliers*/
-	public static final double N = 0.05;
+	public static final double N = 0.1;
 	
 	private static List<GAUNode> nodeset = new ArrayList<GAUNode>();
 	
@@ -112,7 +112,6 @@ public class GaussBased {
 		System.out.println("FP: " + mc.getFP());
 		System.out.println("FN: " + mc.getFN());
 		
-<<<<<<< HEAD
 //		System.out.println("PRECISION: " + mc.getPRECISION());
 //		System.out.println("RECALL: " + mc.getRECALL());
 //		System.out.println("F-MEASURE: " + mc.getFMEASURE());
@@ -121,13 +120,6 @@ public class GaussBased {
 		
 		System.out.println("Detection Rate: " + mc.getDetectRate());
 		System.out.println("FP Rate       : " + mc.getFPRate());
-=======
-		System.out.println("PRECISION: " + mc.getPRECISION());
-		System.out.println("RECALL: " + mc.getRECALL());
-		System.out.println("F-MEASURE: " + mc.getFMEASURE());
-		System.out.println("ACCURACY: " + mc.getCORRECTRATIO());
-		System.out.println("ACCURACY:" + mc.getCORRECTRATIO());
->>>>>>> eb6c49832a2dbe0c4a4ebbd098c019518cb1f9ee
 	}
 	
 	public double getDetectionRate(){

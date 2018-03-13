@@ -27,15 +27,11 @@ import weka.core.neighboursearch.LinearNNSearch;
 public class LOFs {
 	private static Instances dataset;
 	/** top-N outliers*/
-	public static final double N = 0.05;
+	public static final double N = 0.1;
 	/** MinPointsLowerBound in LOF*/
 	public static final String MinPointsLowerBound = "20";
 	/** MinPointsUpperBound in LOF*/
-<<<<<<< HEAD
 	public static final String MinPointsUpperBound = "40";
-=======
-	public static final String MinPointsUpperBound = "5";
->>>>>>> eb6c49832a2dbe0c4a4ebbd098c019518cb1f9ee
 	
 	private static List<LOFNode> nodeset = new ArrayList<LOFNode>();
 	
@@ -119,7 +115,6 @@ public class LOFs {
 		System.out.println("FP:" + mc.getFP());
 		System.out.println("FN:" + mc.getFN());
 		
-<<<<<<< HEAD
 //		System.out.println("PRECISION:" + mc.getPRECISION());
 //		System.out.println("RECALL:" + mc.getRECALL());
 //		System.out.println("F-MEASURE:" + mc.getFMEASURE());
@@ -137,12 +132,6 @@ public class LOFs {
 	public double getFPRate(){
 		MeasureCalculator mc = new MeasureCalculator(nodeset);
 		return mc.getFPRate();
-=======
-		System.out.println("PRECISION:" + mc.getPRECISION());
-		System.out.println("RECALL:" + mc.getRECALL());
-		System.out.println("F-MEASURE:" + mc.getFMEASURE());
-		System.out.println("ACCURACY:" + mc.getCORRECTRATIO());
->>>>>>> eb6c49832a2dbe0c4a4ebbd098c019518cb1f9ee
 	}
 	
 }
