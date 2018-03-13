@@ -150,6 +150,7 @@ public class MeasureCalculator{
 	public double getCORRECTRATIO(){
 		return this.correctratio;
 	}
+<<<<<<< HEAD
 	
 	/** To get detection rate form Confusion Matrix*/
 	public double getDetectRate(){
@@ -160,5 +161,7 @@ public class MeasureCalculator{
 	public double getFPRate(){
 		return getFP()*1.0/(getFP()+getTN())*1.0;
 	}
+=======
+>>>>>>> eb6c49832a2dbe0c4a4ebbd098c019518cb1f9ee
 
 }

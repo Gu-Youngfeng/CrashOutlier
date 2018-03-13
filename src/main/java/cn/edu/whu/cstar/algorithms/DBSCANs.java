@@ -18,9 +18,13 @@ import weka.clusterers.DBSCAN;
 public class DBSCANs {
 	private static Instances dataset;
 	/** Epsilon in DBSCAN*/
+<<<<<<< HEAD
 	public static final double Epsilon = 1.4d;
+=======
+	public static final double Epsilon = 0.9d;
+>>>>>>> eb6c49832a2dbe0c4a4ebbd098c019518cb1f9ee
 	/** MinPoints in DBSCAN*/
-	public static final int MinPoints = 5;
+	public static final int MinPoints = 4;
 	
 	private static List<SBSNode> nodeset = new ArrayList<SBSNode>();
 	
@@ -100,8 +104,15 @@ public class DBSCANs {
 //		System.out.println("F-MEASURE:" + mc.getFMEASURE());
 //		System.out.println("ACCURACY:" + mc.getCORRECTRATIO());
 		
+<<<<<<< HEAD
 		System.out.println("Detection Rate: " + mc.getDetectRate());
 		System.out.println("FP Rate       : " + mc.getFPRate());
+=======
+		System.out.println("PRECISION:" + mc.getPRECISION());
+		System.out.println("RECALL:" + mc.getRECALL());
+		System.out.println("F-MEASURE:" + mc.getFMEASURE());
+		System.out.println("ACCURACY:" + mc.getCORRECTRATIO());
+>>>>>>> eb6c49832a2dbe0c4a4ebbd098c019518cb1f9ee
 	}
 	
 	public double getDetectionRate(){

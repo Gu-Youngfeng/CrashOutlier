@@ -27,9 +27,15 @@ public class IsolationForests {
 	/** Number of instances in each iTree*/
 	public static final int SubSampleSize = 30;
 	/** Number of iTrees*/
+<<<<<<< HEAD
 	public static final int TreeNum = 15;
 	/** Anomaly score threshold*/
 	public static final double s = 0.5;
+=======
+	public static final int TreeNum = 25;
+	/** Anomaly score threshold*/
+	public static final double s = 0.62;
+>>>>>>> eb6c49832a2dbe0c4a4ebbd098c019518cb1f9ee
 	
 	private static List<IFNode> nodeset = new ArrayList<IFNode>();
 	
@@ -99,6 +105,7 @@ public class IsolationForests {
 		System.out.println("FP:" + mc.getFP());
 		System.out.println("FN:" + mc.getFN());
 		
+<<<<<<< HEAD
 //		System.out.println("PRECISION:" + mc.getPRECISION());
 //		System.out.println("RECALL:" + mc.getRECALL());
 //		System.out.println("F-MEASURE:" + mc.getFMEASURE());
@@ -117,6 +124,12 @@ public class IsolationForests {
 	public double getFPRate(){
 		MeasureCalculator mc = new MeasureCalculator(nodeset);
 		return mc.getFPRate();
+=======
+		System.out.println("PRECISION:" + mc.getPRECISION());
+		System.out.println("RECALL:" + mc.getRECALL());
+		System.out.println("F-MEASURE:" + mc.getFMEASURE());
+		System.out.println("ACCURACY:" + mc.getCORRECTRATIO());
+>>>>>>> eb6c49832a2dbe0c4a4ebbd098c019518cb1f9ee
 	}
 	
 	
